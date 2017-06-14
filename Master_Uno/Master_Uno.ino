@@ -1,4 +1,6 @@
 /*
+Master_Uno code template, derived from BluetoothShield Demo Code
+
 BluetoothShield Demo Code Master.pde.This sketch could be used with
 Slave.pde to establish connection between two Arduino.
 2011 Copyright (c) Seeed Technology Inc.  All right reserved.
@@ -36,7 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 //Accelerometer
 #define ystill 335
-#define speeed 10
+#define speeed 5
 #define stillerror 10
 
 String retSymb   = "+RTINQ=";                       // start symble when there's any return
@@ -65,51 +67,34 @@ void setup()
     pinMode(TxD, OUTPUT);
     pinMode(PINBUTTON, INPUT);
     
-/*    setupBlueToothConnection();
+    setupBlueToothConnection();
+    
     //wait 1s and flush the serial buffer
     delay(1000);
     Serial.flush();
     blueToothSerial.flush();
-*/
+
     pinMode(groundpin, OUTPUT);
     pinMode(powerpin, OUTPUT);
   
     digitalWrite(groundpin, LOW);
     digitalWrite(powerpin, HIGH);
-    
 }
-
 
 void loop()
 {
-    int y = analogRead(ypin);
-  
-  if (int(analogRead(ypin))-ystill < -stillerror){
-    y = speeed*(-1+ (y+stillerror)/ystill);
-    //y=0;
-    Serial.print("Left ");
-    //blueToothSerial.print('0');
-  }
-  else if (int(analogRead(ypin)) - stillerror > ystill){
-    y = speeed*((y-stillerror)/ystill -1);
-    //y=2;
-    Serial.print("Right ");
-    //blueToothSerial.print('1');
-  }
-  else{
-    Serial.print("Still ");
-    y = 0;
-  }
-  Serial.print(y);
-  Serial.println();
-  //comment this out when bluetooth is fully functional
-  //blueToothSerial.print(y);
-  //blueToothSerial.print("\n");
-  delay(100);
+  // read from the pin
+  double y = analogRead(ypin);
+
+  // encode to int
+  int sent = encode(y);
+
+  // send as one char over bluetooth
+  blueToothSerial.print((char)sent);
+
+  // don't send too much discarded data
+  delay(20);
 }
-  //comment this out when bluetooth is fully functional
-  //blueToothSerial.print(y);
-  //blueToothSerial.print("\n");
 
 
 void setupBlueToothConnection()
@@ -184,8 +169,15 @@ void setupBlueToothConnection()
     }while(0 == connectOK);
 }
 
-/*
-unsigned int encode (unsigned int y){
-  
+// Encode specificly for the accelerometer we used
+int encode (double y){
+  if (int(y)-ystill < -stillerror){
+    y = int(128*((y+stillerror)/ystill));
+  } else if (int(y) - stillerror > ystill){
+      y = int(128*((y-stillerror)/ystill));
+  } else{
+    y = 128;
+  }
+  return y;
 }
-*/
+
