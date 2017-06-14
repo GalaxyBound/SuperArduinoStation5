@@ -12,4 +12,12 @@ Super Arduino Station 5 is a project that connects an Arduino Uno acting as an g
 - [DueVGA Library by Stimmer](https://github.com/stimmer/DueVGA)
 - Asorted Resistors (See schematic)
 
-![alt text](http://url/to/img.png)
+## Schematics
+
+### Arduino Due Console
+![alt text](https://github.com/GalaxyBound/SuperArduinoStation5/raw/master/Schematics/SAS5_console_schem.png)
+
+### Arduino Uno Controller
+![alt text](https://github.com/GalaxyBound/SuperArduinoStation5/raw/master/Schematics/SAS5_controller_schem.png)
+
+Note: The Seeeduino Bluetooth shield is ommitted from the above schematics.
